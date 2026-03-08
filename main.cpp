@@ -1,7 +1,9 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <vector>
 
-#using namespace std;
+using namespace std;
 
 int accuracy(const std::vector<std::vector<int>>& data, int current_set, int features_to_add)
 {
@@ -27,23 +29,27 @@ void search(const std::vector<std::vector<int>>& data, int current_set, int feat
     }
 }
 
+int main() {
+    ifstream file("CS170_Small_dataSet_1.txt");
+    string line;
 
+    vector<int> labels;
+    vector<vector<double>> features;
 
-int main()
-{
-    // Example usage
-    std::vector<std::vector<int>> data = {
-        {1, 0, 1},
-        {0, 1, 0},
-        {1, 1, 1},
-        {0, 0, 0}
-    };
-    
-    int current_set = 0; // Index of the current set
-    int features_to_add = 2; // Index of the features to add
-    
-    int result = accuracy(data, current_set, features_to_add);
-    std::cout << "Accuracy: " << result << std::endl;
-    
-    return 0;
+    while (getline(file, line)) {
+        stringstream ss(line);
+        double value;
+
+        ss >> value;
+        labels.push_back((int)value);
+
+        vector<double> row;
+        while (ss >> value) {
+            row.push_back(value);
+        }
+
+        features.push_back(row);
+    }
+
+    cout << "Loaded " << features.size() << " instances." << endl;
 }
