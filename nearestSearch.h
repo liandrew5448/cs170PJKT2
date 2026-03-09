@@ -6,5 +6,6 @@
 class NearestSearch {
 public:
     int accuracy(const std::vector<std::vector<int>>& data, int current_set, int features_to_add);
-    void search(const std::vector<std::vector<int>>& data, int current_set, int features_to_add);
+    int search(const std::vector<std::vector<int>>& data, int current_set, int features_to_add);
+    double distance(const std::vector<int>& instance1, const std::vector<int>& instance2);
 };

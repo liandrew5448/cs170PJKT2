@@ -7,29 +7,25 @@
 using namespace std;
 
 int main() {
-    ifstream file("CS170_Small_dataSet_1.txt");
+    ifstream file("CS170_Small_dataSet_1.csv");
     string line;
 
-    vector<int> labels;
-    vector<vector<double>> features;
+    vector<vector<double>> dataset;
 
     while (getline(file, line)) {
-        stringstream ss(line);
-        double value;
-
-        ss >> value;
-        labels.push_back((int)value);
-
         vector<double> row;
-        while (ss >> value) {
-            row.push_back(value);
+        string value;
+        stringstream ss(line);
+
+        while (getline(ss, value, ',')) {
+            row.push_back(stod(value));
         }
 
-        features.push_back(row);
+        dataset.push_back(row);
     }
 
-    cout << "Loaded " << features.size() << " instances." << endl;
+    cout << "Loaded " << dataset.size() << " instances." << endl;
 
     NearestSearch nearestNeightbor;
-    nearestNeightbor.search(features, 0, 1);
+    nearestNeightbor.search(dataset, 0, 1);
 }
