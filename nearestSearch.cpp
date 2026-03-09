@@ -33,7 +33,7 @@ void NearestSearch::search(const std::vector<std::vector<int>>& data, int curren
 double NearestSearch::distance(const std::vector<int>& instance1, const std::vector<int>& instance2)
 {
     double sum = 0.0;
-    for (int i = 0; i < instance1.size(); i++)
+    for (size_t i = 0; i < instance1.size(); i++)
     {
         sum += (instance1[i] - instance2[i]) * (instance1[i] - instance2[i]);
     }
