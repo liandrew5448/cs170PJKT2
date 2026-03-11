@@ -1,16 +1,16 @@
 #include "nearestSearch.h"
 
-int NearestSearch::accuracy(const std::vector<std::vector<int>>& data, int current_set, int features_to_add)
+int NearestSearch::accuracy(const std::vector<std::vector<int>>& data, std::vector<int>& labels, int current_set, int features_to_add`)
 {
-    int accuracy = 0;
+    int correct = 0;
     for (int i = 0; i < data.size(); i++)
     {
-        if (data[i][current_set] == data[i][features_to_add])
+        if (labels[i] == labels[features_to_add])
         {
-            accuracy++;
+            correct++;
         }
     }
-    return accuracy;
+    return correct/data.size();
 }
 
 void NearestSearch::search(const std::vector<std::vector<int>>& data, int current_set, int features_to_add)
@@ -38,4 +38,27 @@ double NearestSearch::distance(const std::vector<int>& instance1, const std::vec
         sum += (instance1[i] - instance2[i]) * (instance1[i] - instance2[i]);
     }
     return sqrt(sum);
+}
+
+void NearestSearch::crossValidation(const std::vector<std::vector<int>>& data, int features_to_add)
+{
+
+}
+
+void NearestSearch::forwardSelection(const std::vector<std::vector<int>>& data)
+{
+    for(int i = 0; i < data.size(); i++)
+    {
+        for(int j = 1; j < data[i].size(); j++)
+        {
+            search(data, i, j);
+
+        }
+    }
+    
+}
+
+void NearestSearch::backwardElimination(const std::vector<std::vector<int>>& data)
+{
+    
 }
