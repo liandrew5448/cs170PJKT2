@@ -13,44 +13,55 @@ void crossValidation(const std::vector<std::vector<int>>& data, int features_to_
 
 }
 
-void sforwardSelection(const std::vector<int>& labels, const std::vector<std::vector<double>>& features)
+void forwardSelection(const std::vector<int>& labels, const std::vector<std::vector<double>>& features)
 {//seaches for the best set of features by combining one feature at a time
     NearestSearch searcher;
-    vector<int> current_set; //stores the current set of features
+    vector<int> currentSet; //stores the current set of features
+    vector<int> bestSet; //stores the best set of features found
     int num_features = features[0].size();
+    double overallAccuracy = 0.0;
 
     for (int level = 0; level < num_features; level++) //for each level of feature combination
     {
-        int best_feature = -1;
-        double best_accuracy = 0.0;
+        int bestFeature = -1;
+        double bestAccuracy = 0.0;
         for (int feature = 0; feature < num_features; feature++)
         {
-            if (find(current_set.begin(), current_set.end(), feature) == current_set.end()) //if feature is not already in the set
+            if (find(currentSet.begin(), currentSet.end(), feature) == currentSet.end()) //if feature is not already in the set
             {
-                double accuracy = searcher.accuracy(features, labels, current_set, feature);
+                double accuracy = searcher.accuracy(features, labels, currentSet, feature);
+
+                vector<int> tempSet = currentSet;
+                tempSet.push_back(feature);
                 cout << "Using feature(s) {";
-                for (int f : current_set) {
+
+                for (int f : tempSet) {
                     cout << f + 1 << " "; //print features in 1-based index
                 }
                 cout << "} accuracy is " << accuracy * 100 << "%" << endl;
 
-                if (accuracy > best_accuracy)
-                {
-                    best_accuracy = accuracy;
-                    best_feature = feature;
+                if (accuracy > bestAccuracy) {
+                    bestAccuracy = accuracy;
+                    bestFeature = feature;
                 }
             }
         }
-        if (best_feature != -1) {
-            current_set.push_back(best_feature);
+        if (bestFeature != -1) {
+            currentSet.push_back(bestFeature);
+        }
+
+        if(bestAccuracy > overallAccuracy) {
+            overallAccuracy = bestAccuracy;
+            bestSet = currentSet;
         }
     }
 
     cout << endl << "Best feature subset: {";
-    for (int f : current_set) {
+    for (int f : bestSet) {
         cout << f + 1 << " "; //print features in 1-based index
     }
     cout << "}" << endl;
+    cout << "With an accuracy of: " << overallAccuracy * 100 << "%" << endl;
 
 }
 
@@ -104,7 +115,7 @@ int main() {
 
     if(choice == 1)
     {
-        sforwardSelection(labels, features);
+        forwardSelection(labels, features);
     }
     else if(choice == 2)
     {

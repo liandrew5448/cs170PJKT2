@@ -1,54 +1,52 @@
 #include <iostream>
 #include <cmath>
+#include <limits>
 #include "nearestSearch.h"
 
-double NearestSearch::search(const std::vector<std::vector<double>>& features, const std::vector<int>& labels, const std::vector<int>& feature_subset)
+int NearestSearch::search(const std::vector<std::vector<double>>& features, const std::vector<int>& labels, int targetLabel, const std::vector<int>& targetFeatures)
 {//searches for the nearest neighbor of the current set using the first features features
-    double min_distance = std::numeric_limits<double>::max();
-    int closest_index = -1;
+    int closestIndex = -1;
+    double closest_distance = std::numeric_limits<double>::infinity();
 
-    for (size_t i = 0; i < features.size(); i++) {
-        double dist = distance(features[i], features[feature_subset[0]], feature_subset.size());
-        if (dist < min_distance) {
-            min_distance = dist;
-            closest_index = i;
+    for(size_t i = 0; i < features.size(); i++)
+    {
+        if(i == targetLabel) continue; //only consider instances with a different label
+        {
+            double dist = distance(features[targetLabel], features[i], targetFeatures); //calculate distance using the current set of features
+            if (dist < closest_distance) //update closest neighbor
+            {
+                closest_distance = dist;
+                closestIndex = i;
+            }
         }
     }
-
-    return closest_index;
+    return closestIndex;
 }
 
-double NearestSearch::distance(const std::vector<double>& instance1, const std::vector<double>& instance2, int num_features)
+double NearestSearch::distance(const std::vector<double>& instance1, const std::vector<double>& instance2, const std::vector<int>& targetFeatures)
 {
     double sum = 0.0;
-    for (size_t i = 0; i < num_features ; i++)
+    for (size_t i = 0; i < targetFeatures.size() ; i++)
     {
-        sum += (instance1[i] - instance2[i]) * (instance1[i] - instance2[i]);
+        sum += (instance1[targetFeatures[i]] - instance2[targetFeatures[i]]) * (instance1[targetFeatures[i]] - instance2[targetFeatures[i]]);
     }
     return sqrt(sum);
 }
 
-double NearestSearch::accuracy(const std::vector<std::vector<double>>& features, const std::vector<int>& labels, const std::vector<int>& current_set, int feature_to_add)
+double NearestSearch::accuracy(const std::vector<std::vector<double>>& features, const std::vector<int>& labels, const std::vector<int>& currentSet, int featureToAdd)
 {
-    //sudocode
-    for i = 1 : size(data, 1)
-        object_to_classify = data(i,2:end);
-        label_object_to_classify = data(i,1);
+    int correct = 0;
+    std::vector<int> featureSubset = currentSet;
+    featureSubset.push_back(featureToAdd); //create a new feature subset with the added feature
 
-        nearest_neighbor_distance = inf;
-        nearest_neighbor_location = inf;
-        for k = 1 : size(data, 1)
-            disp([Ask if, int2str(i), ' is nearest neighbour with ', int2str(k)]);
+    for (size_t i = 0; i < features.size(); i++)
+    {
+        int nearestIndex = search(features, labels, i, featureSubset); //predict the label using the new feature subset
+        if (labels[nearestIndex] == labels[i]) //check if the prediction is correct
+        {
+            correct++;
+        }
+    }
 
-            if k ~= i
-                distance = sqrt(sum((object_to_classify - data(k,2:end)).^2));
-                if distance < nearest_neighbor_distance
-                    nearest_neighbor_distance = distance;
-                    nearest_neighbor_location = k;
-                end
-            end
-        end
-    end
-end
-
+    return static_cast<double>(correct) / features.size();
 }
