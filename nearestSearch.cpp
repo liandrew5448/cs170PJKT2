@@ -30,16 +30,25 @@ double NearestSearch::distance(const std::vector<double>& instance1, const std::
 
 double NearestSearch::accuracy(const std::vector<std::vector<double>>& features, const std::vector<int>& labels, const std::vector<int>& current_set, int feature_to_add)
 {
-    std::vector<int> new_set = current_set;
-    new_set.push_back(feature_to_add);
-    int correct_predictions = 0;
+    //sudocode
+    for i = 1 : size(data, 1)
+        object_to_classify = data(i,2:end);
+        label_object_to_classify = data(i,1);
 
-    for (size_t i = 0; i < features.size(); i++) {
-        int closest_index = search(features, labels, new_set);
-        if (labels[closest_index] == labels[i]) {
-            correct_predictions++;
-        }
-    }
+        nearest_neighbor_distance = inf;
+        nearest_neighbor_location = inf;
+        for k = 1 : size(data, 1)
+            disp([Ask if, int2str(i), ' is nearest neighbour with ', int2str(k)]);
 
-    return static_cast<double>(correct_predictions) / features.size();
+            if k ~= i
+                distance = sqrt(sum((object_to_classify - data(k,2:end)).^2));
+                if distance < nearest_neighbor_distance
+                    nearest_neighbor_distance = distance;
+                    nearest_neighbor_location = k;
+                end
+            end
+        end
+    end
+end
+
 }
