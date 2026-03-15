@@ -5,10 +5,9 @@
 
 class NearestSearch {
 public:
-    int accuracy(const std::vector<std::vector<int>>& data, int current_set, int features_to_add);
-    void search(const std::vector<std::vector<int>>& data, int current_set, int features_to_add);
-    double distance(const std::vector<int>& instance1, const std::vector<int>& instance2);
-    void crossValidation(const std::vector<std::vector<int>>& data, int features_to_add);
-    void forwardSelection(const std::vector<std::vector<int>>& data);
-    void backwardElimination(const std::vector<std::vector<int>>& data);
+    double search(const std::vector<std::vector<double>>& features, const std::vector<int>& labels, const std::vector<int>& feature_subset);
+    double distance(const std::vector<double>& instance1, const std::vector<double>& instance2, int num_features);
+    double accuracy(const std::vector<std::vector<double>>& features, const std::vector<int>& labels, const std::vector<int>& current_set, int feature_to_add);
 };
+
+#endif 

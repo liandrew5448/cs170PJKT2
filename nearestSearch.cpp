@@ -1,64 +1,45 @@
+#include <iostream>
+#include <cmath>
 #include "nearestSearch.h"
 
-int NearestSearch::accuracy(const std::vector<std::vector<int>>& data, std::vector<int>& labels, int current_set, int features_to_add`)
-{
-    int correct = 0;
-    for (int i = 0; i < data.size(); i++)
-    {
-        if (labels[i] == labels[features_to_add])
-        {
-            correct++;
-        }
-    }
-    return correct/data.size();
-}
-
-void NearestSearch::search(const std::vector<std::vector<int>>& data, int current_set, int features_to_add)
-{
+double NearestSearch::search(const std::vector<std::vector<double>>& features, const std::vector<int>& labels, const std::vector<int>& feature_subset)
+{//searches for the nearest neighbor of the current set using the first features features
+    double min_distance = std::numeric_limits<double>::max();
     int closest_index = -1;
-    for (int i = 0; i < data.size(); i++)
-    {
-        if (i != current_set)
-        {
-            double dist = distance(data[current_set], data[i]);
-            if (closest_index == -1 || dist < distance(data[current_set], data[closest_index]))
-            {
-                closest_index = i;
-            }
+
+    for (size_t i = 0; i < features.size(); i++) {
+        double dist = distance(features[i], features[feature_subset[0]], feature_subset.size());
+        if (dist < min_distance) {
+            min_distance = dist;
+            closest_index = i;
         }
     }
-    std::cout << "Closest instance found at index: " << closest_index << std::endl;
+
+    return closest_index;
 }
 
-double NearestSearch::distance(const std::vector<int>& instance1, const std::vector<int>& instance2)
+double NearestSearch::distance(const std::vector<double>& instance1, const std::vector<double>& instance2, int num_features)
 {
     double sum = 0.0;
-    for (size_t i = 0; i < instance1.size(); i++)
+    for (size_t i = 0; i < num_features ; i++)
     {
         sum += (instance1[i] - instance2[i]) * (instance1[i] - instance2[i]);
     }
     return sqrt(sum);
 }
 
-void NearestSearch::crossValidation(const std::vector<std::vector<int>>& data, int features_to_add)
+double NearestSearch::accuracy(const std::vector<std::vector<double>>& features, const std::vector<int>& labels, const std::vector<int>& current_set, int feature_to_add)
 {
+    std::vector<int> new_set = current_set;
+    new_set.push_back(feature_to_add);
+    int correct_predictions = 0;
 
-}
-
-void NearestSearch::forwardSelection(const std::vector<std::vector<int>>& data)
-{
-    for(int i = 0; i < data.size(); i++)
-    {
-        for(int j = 1; j < data[i].size(); j++)
-        {
-            search(data, i, j);
-
+    for (size_t i = 0; i < features.size(); i++) {
+        int closest_index = search(features, labels, new_set);
+        if (labels[closest_index] == labels[i]) {
+            correct_predictions++;
         }
     }
-    
-}
 
-void NearestSearch::backwardElimination(const std::vector<std::vector<int>>& data)
-{
-    
+    return static_cast<double>(correct_predictions) / features.size();
 }
