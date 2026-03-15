@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <vector>
@@ -6,29 +7,120 @@
 
 using namespace std;
 
+
+void crossValidation(const std::vector<std::vector<int>>& data, int features_to_add)
+{
+
+}
+
+void forwardSelection(const std::vector<int>& labels, const std::vector<std::vector<double>>& features)
+{//seaches for the best set of features by combining one feature at a time
+    NearestSearch searcher;
+    vector<int> currentSet; //stores the current set of features
+    vector<int> bestSet; //stores the best set of features found
+    int num_features = features[0].size();
+    double overallAccuracy = 0.0;
+
+    for (int level = 0; level < num_features; level++) //for each level of feature combination
+    {
+        int bestFeature = -1;
+        double bestAccuracy = 0.0;
+        for (int feature = 0; feature < num_features; feature++)
+        {
+            if (find(currentSet.begin(), currentSet.end(), feature) == currentSet.end()) //if feature is not already in the set
+            {
+                double accuracy = searcher.accuracy(features, labels, currentSet, feature);
+
+                vector<int> tempSet = currentSet;
+                tempSet.push_back(feature);
+                cout << "Using feature(s) {";
+
+                for (int f : tempSet) {
+                    cout << f + 1 << " "; //print features in 1-based index
+                }
+                cout << "} accuracy is " << accuracy * 100 << "%" << endl;
+
+                if (accuracy > bestAccuracy) {
+                    bestAccuracy = accuracy;
+                    bestFeature = feature;
+                }
+            }
+        }
+        if (bestFeature != -1) {
+            currentSet.push_back(bestFeature);
+        }
+
+        if(bestAccuracy > overallAccuracy) {
+            overallAccuracy = bestAccuracy;
+            bestSet = currentSet;
+        }
+    }
+
+    cout << endl << "Best feature subset: {";
+    for (int f : bestSet) {
+        cout << f + 1 << " "; //print features in 1-based index
+    }
+    cout << "}" << endl;
+    cout << "With an accuracy of: " << overallAccuracy * 100 << "%" << endl;
+
+}
+
+void backwardElimination(const std::vector<std::vector<int>>& data)
+{
+    
+}
+
 int main() {
-   ifstream file("CS170_Small_dataSet_1.txt");
+    /*cout << "Welcome to the Feature Selection Algorithm." << endl;
+    cout << "Type in the name of the file to test: ";
+    string filename;
+    cin >> filename;
+    cout << endl << "Loading in dataset..." << endl;*/
+    string filename = "CS170_Small_DataSet__10.txt";
+
+    ifstream file(filename);
     string line;
+
+    if (!file.is_open()) {
+    cout << "Error: Could not open file." << endl;
+    return 1;
+    }
 
     vector<int> labels;
     vector<vector<double>> features;
 
+    //first column is the true label, the rest are the features
     while (getline(file, line)) {
         stringstream ss(line);
         double value;
 
         ss >> value;
-        labels.push_back((int)value);
+        labels.push_back((int)value); //store label
 
         vector<double> row;
         while (ss >> value) {
             row.push_back(value);
         }
 
-        features.push_back(row);
+        features.push_back(row); //store features at same index as label
     }
 
-    NearestSearch nearSearch;
-    vector<double> query = {5.1, 3.5, 1.4, 0.2}; // Example query instance
+    cout << "Dataset loaded." << endl;
+    cout << "Type the number of the algorithm you want to run: " << endl;
+    cout << "1. Forward Selection" << endl;
+    cout << "2. Backward Elimination" << endl;
+    int choice;
+    cin >> choice;
+    cout << endl << "Running algorithm..." << endl << endl;
 
+    if(choice == 1)
+    {
+        forwardSelection(labels, features);
+    }
+    else if(choice == 2)
+    {
+        //backwardElimination(features);
+    }
+
+    cout << "Search completed." << endl;
 }
