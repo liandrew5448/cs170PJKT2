@@ -3,10 +3,12 @@
 #include <limits>
 #include "nearestSearch.h"
 
-int NearestSearch::search(const std::vector<std::vector<double>>& features, const std::vector<int>& labels, int targetLabel, const std::vector<int>& targetFeatures)
+using namespace std;
+
+int NearestSearch::search(const vector<std::vector<double>>& features, const vector<int>& labels, int targetLabel, const vector<int>& targetFeatures)
 {//searches for the nearest neighbor of the current set using the first features features
     int closestIndex = -1;
-    double closest_distance = std::numeric_limits<double>::infinity();
+    double closest_distance = numeric_limits<double>::infinity();
 
     for(size_t i = 0; i < features.size(); i++)
     {
@@ -23,7 +25,7 @@ int NearestSearch::search(const std::vector<std::vector<double>>& features, cons
     return closestIndex;
 }
 
-double NearestSearch::distance(const std::vector<double>& instance1, const std::vector<double>& instance2, const std::vector<int>& targetFeatures)
+double NearestSearch::distance(const vector<double>& instance1, const vector<double>& instance2, const vector<int>& targetFeatures)
 {
     double sum = 0.0;
     for (size_t i = 0; i < targetFeatures.size() ; i++)
@@ -33,7 +35,7 @@ double NearestSearch::distance(const std::vector<double>& instance1, const std::
     return sqrt(sum);
 }
 
-double NearestSearch::crossValidation(const std::vector<std::vector<double>>& features, const std::vector<int>& labels, const std::vector<int>& currentSet)
+double NearestSearch::crossValidation(const vector<vector<double>>& features, const vector<int>& labels, const vector<int>& currentSet)
 {
     int correct = 0;
     

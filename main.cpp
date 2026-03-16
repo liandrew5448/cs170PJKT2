@@ -8,7 +8,7 @@
 using namespace std;
 
 
-void forwardSelection(const std::vector<int>& labels, const std::vector<std::vector<double>>& features)
+void forwardSelection(const vector<int>& labels, const vector<vector<double>>& features)
 {//seaches for the best set of features by combining one feature at a time
     NearestSearch searcher;
     vector<int> currentSet; //stores the current set of features
@@ -60,7 +60,7 @@ void forwardSelection(const std::vector<int>& labels, const std::vector<std::vec
 
 }
 
-void backwardElimination(const std::vector<int>& labels, const std::vector<std::vector<double>>& features)
+void backwardElimination(const vector<int>& labels, const vector<vector<double>>& features)
 {//seaches for the best set of features by combining one feature at a time
     NearestSearch searcher;
     vector<int> currentSet;//stores the current set of features
@@ -120,7 +120,7 @@ int main() {
     string filename;
     cin >> filename;
     cout << endl << "Loading in dataset..." << endl;*/
-    string filename = "CS170_Small_DataSet__10.txt";
+    string filename = "SanityCheckDataSet__2.txt";
 
     ifstream file(filename);
     string line;
