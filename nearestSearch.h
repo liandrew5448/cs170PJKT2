@@ -3,6 +3,8 @@
 
 #include <vector>
 
+using namespace std;
+
 class NearestSearch {
 public:
     int search(const vector<vector<double>>& features, const vector<int>& labels, int targetLabel, const vector<int>& featureSubset);
