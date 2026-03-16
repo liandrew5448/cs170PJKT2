@@ -8,31 +8,26 @@
 using namespace std;
 
 
-void crossValidation(const std::vector<std::vector<int>>& data, int features_to_add)
-{
-
-}
-
 void forwardSelection(const std::vector<int>& labels, const std::vector<std::vector<double>>& features)
 {//seaches for the best set of features by combining one feature at a time
     NearestSearch searcher;
     vector<int> currentSet; //stores the current set of features
     vector<int> bestSet; //stores the best set of features found
-    int num_features = features[0].size();
+    int numFeatures = features[0].size();
     double overallAccuracy = 0.0;
 
-    for (int level = 0; level < num_features; level++) //for each level of feature combination
+    for (int level = 0; level < numFeatures; level++) //for each level of feature combination
     {
         int bestFeature = -1;
         double bestAccuracy = 0.0;
-        for (int feature = 0; feature < num_features; feature++)
+        for (int feature = 0; feature < numFeatures; feature++)
         {
             if (find(currentSet.begin(), currentSet.end(), feature) == currentSet.end()) //if feature is not already in the set
             {
-                double accuracy = searcher.accuracy(features, labels, currentSet, feature);
 
                 vector<int> tempSet = currentSet;
                 tempSet.push_back(feature);
+                double accuracy = searcher.crossValidation(features, labels, tempSet); //tests accuracy of the set
                 cout << "Using feature(s) {";
 
                 for (int f : tempSet) {
@@ -65,9 +60,58 @@ void forwardSelection(const std::vector<int>& labels, const std::vector<std::vec
 
 }
 
-void backwardElimination(const std::vector<std::vector<int>>& data)
-{
-    
+void backwardElimination(const std::vector<int>& labels, const std::vector<std::vector<double>>& features)
+{//seaches for the best set of features by combining one feature at a time
+    NearestSearch searcher;
+    vector<int> currentSet;//stores the current set of features
+    for(int i = 0; i < features[0].size(); i++)
+    {
+        currentSet.push_back(i);//start with all features in the set
+    }
+
+    vector<int> bestSet;//stores the best set of features found
+    int numFeatures = features[0].size();
+    double overallAccuracy = 0.0;
+
+    for (int level = numFeatures - 1; level >= 0; level--)//for each level of feature combination
+    {
+        int removeFeature = -1;
+        double bestAccuracy = 0.0;
+        for (int feature : currentSet)
+        {
+
+            vector<int> tempSet = currentSet;
+            tempSet.erase(remove(tempSet.begin(), tempSet.end(), feature), tempSet.end()); //removes one feature from the set
+            double accuracy = searcher.crossValidation(features, labels, tempSet);//tests accuracy of the set 
+            
+            cout << "Using feature(s) {";
+
+            for (int f : tempSet) {
+                cout << f + 1 << " "; //print features in 1-based index
+            }
+            cout << "} accuracy is " << accuracy * 100 << "%" << endl;
+
+            if (accuracy > bestAccuracy) {
+                bestAccuracy = accuracy;
+                removeFeature = feature;
+            }
+        }
+        if (removeFeature != -1) {
+            currentSet.erase(remove(currentSet.begin(), currentSet.end(), removeFeature), currentSet.end());
+        }
+
+        if(bestAccuracy > overallAccuracy) {
+            overallAccuracy = bestAccuracy;
+            bestSet = currentSet;
+        }
+    }
+
+    cout << endl << "Best feature subset: {";
+    for (int f : bestSet) {
+        cout << f + 1 << " "; //print features in 1-based index
+    }
+    cout << "}" << endl;
+    cout << "With an accuracy of: " << overallAccuracy * 100 << "%" << endl;
 }
 
 int main() {
@@ -119,7 +163,7 @@ int main() {
     }
     else if(choice == 2)
     {
-        //backwardElimination(features);
+        backwardElimination(labels, features);
     }
 
     cout << "Search completed." << endl;

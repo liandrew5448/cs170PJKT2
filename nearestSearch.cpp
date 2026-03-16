@@ -33,15 +33,13 @@ double NearestSearch::distance(const std::vector<double>& instance1, const std::
     return sqrt(sum);
 }
 
-double NearestSearch::accuracy(const std::vector<std::vector<double>>& features, const std::vector<int>& labels, const std::vector<int>& currentSet, int featureToAdd)
+double NearestSearch::crossValidation(const std::vector<std::vector<double>>& features, const std::vector<int>& labels, const std::vector<int>& currentSet)
 {
     int correct = 0;
-    std::vector<int> featureSubset = currentSet;
-    featureSubset.push_back(featureToAdd); //create a new feature subset with the added feature
-
+    
     for (size_t i = 0; i < features.size(); i++)
     {
-        int nearestIndex = search(features, labels, i, featureSubset); //predict the label using the new feature subset
+        int nearestIndex = search(features, labels, i, currentSet); //predict the label using the new feature subset
         if (labels[nearestIndex] == labels[i]) //check if the prediction is correct
         {
             correct++;
