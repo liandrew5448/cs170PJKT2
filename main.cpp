@@ -120,7 +120,7 @@ int main() {
     string filename;
     cin >> filename;
     cout << endl << "Loading in dataset..." << endl;*/
-    string filename = "SanityCheckDataSet__2.txt";
+    string filename = "CS170_Large_DataSet__39.txt";
 
     ifstream file(filename);
     string line;
