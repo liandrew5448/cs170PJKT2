@@ -3,11 +3,13 @@
 
 #include <vector>
 
+using namespace std;
+
 class NearestSearch {
 public:
-    int search(const std::vector<std::vector<double>>& features, const std::vector<int>& labels, int targetLabel, const std::vector<int>& featureSubset);
-    double distance(const std::vector<double>& instance1, const std::vector<double>& instance2, const std::vector<int>& featureSubset);
-    double crossValidation(const std::vector<std::vector<double>>& features, const std::vector<int>& labels, const std::vector<int>& currentSet);
+    int search(const vector<vector<double>>& features, const vector<int>& labels, int targetLabel, const vector<int>& featureSubset);
+    double distance(const vector<double>& instance1, const vector<double>& instance2, const vector<int>& featureSubset);
+    double crossValidation(const vector<vector<double>>& features, const vector<int>& labels, const vector<int>& currentSet);
 };
 
 #endif 
